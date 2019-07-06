@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lounas-ingress
+spec:
+  backend:
+    serviceName: lounas
+    servicePort: 8000
+  rules:
+    - host: lounas
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: lounas
+              servicePort: 8000

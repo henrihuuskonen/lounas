@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lounas
+  labels:
+    name: lounas
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lounas
+    spec:
+      containers:
+        - name: lounas
+          image: eu.gcr.io/echie-prod/lounas:latest
+          env:
+            - name: FLASK_ENV
+              value: "production"
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /_health
+              port: 8000
+          livenessProbe:
+            httpGet:
+              path: /_health
+              port: 8000
