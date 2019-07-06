@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return Response("Hello World!", status=200)
 
 
 @app.route("/_health")
