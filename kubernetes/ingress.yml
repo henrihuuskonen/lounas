@@ -3,14 +3,10 @@ kind: Ingress
 metadata:
   name: lounas-ingress
 spec:
-  backend:
-    serviceName: lounas
-    servicePort: 8000
   rules:
-    - host: lounas
-      http:
+    - http:
         paths:
-          - path: /
+          - path: /lounas
             backend:
               serviceName: lounas
               servicePort: 8000
