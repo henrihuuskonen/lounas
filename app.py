@@ -1,12 +1,12 @@
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 import config
 
 app = Flask(__name__)
 
 
 @app.route("/")
-def hello():
-    return Response("Hello World!", status=200)
+def index():
+    return render_template("index.html")
 
 
 @app.route("/_health")
