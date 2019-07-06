@@ -1,7 +1,7 @@
 from os import environ
 import multiprocessing
 
-PORT = int(environ.get("PORT", 8080))
+PORT = int(environ.get("PORT", 8000))
 DEBUG_MODE = environ["FLASK_ENV"] != "production"
 
 # Gunicorn config
