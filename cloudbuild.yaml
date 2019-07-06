@@ -22,18 +22,16 @@ steps:
       - "apply"
       - "-f"
       - "kubernetes/"
-    env:
-      - "CLOUDSDK_COMPUTE_ZONE=europe-north1-a"
-      - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"
   - name: "gcr.io/cloud-builders/kubectl"
     args:
       - "set"
       - "image"
       - "deployment/lounas"
       - "lounas=eu.gcr.io/echie-prod/lounas:$SHORT_SHA"
-    env:
-      - "CLOUDSDK_COMPUTE_ZONE=europe-north1-a"
-      - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"
 images:
   - "eu.gcr.io/echie-prod/lounas:$SHORT_SHA"
   - "eu.gcr.io/echie-prod/lounas:latest"
+options:
+  env:
+    - "CLOUDSDK_COMPUTE_ZONE=europe-north1-a"
+    - "CLOUDSDK_CONTAINER_CLUSTER=cluster-1"
