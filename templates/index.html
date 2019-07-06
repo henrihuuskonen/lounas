@@ -20,5 +20,30 @@
   </style>
 </head>
 <body>
-  <h1>Hello World!</h1>
+
+  <h1>Ruokaa!</h1>
+
+    <h2> Silta: </h2>
+    {% if silta %}
+      <ul>
+      {% for item in silta %}
+        <li> {{ item }}</a>
+      {% endfor %}
+      </ul>
+    {% else %}
+      Ei mitään :(
+    {% endif %}
+
+
+    <h2> Oikeus: </h2>
+    {% if oikeus %}
+      <ul>
+      {% for item in oikeus %}
+        <li> {{ item }}</a>
+      {% endfor %}
+      </ul>
+    {% else %}
+      Ei mitään :(
+    {% endif %}
+
 </body>
