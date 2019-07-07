@@ -1,3 +1,4 @@
+import re
 from datetime import date, timedelta
 
 import requests
@@ -9,6 +10,23 @@ import config
 app = Flask(__name__)
 
 DATE_MAP = {0: "maanantai", 1: "tiistai", 2: "keskiviikko", 3: "torstai", 4: "perjantai", 5: "lauantai", 6: "sunnuntai"}
+
+
+def crawl_factory():
+    r = requests.get("https://ravintolafactory.com/lounasravintolat/ravintolat/helsinki-salmisaari/")
+
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    today = DATE_MAP[date.weekday(date.today())].capitalize()
+    h3 = soup.find("h3", string=re.compile(today))
+    if not h3:
+        return None
+
+    next_p = h3.findNext("p")
+    if next_p.find("img"):
+        next_p = next_p.findNext("p")
+
+    return [str(item).strip() for item in next_p.contents if str(item) != "<br/>"]
 
 
 def crawl_garam_page(url):
@@ -42,7 +60,7 @@ def crawl_silta():
 
 @app.route("/")
 def index():
-    return render_template("index.html", silta=crawl_silta(), oikeus=crawl_oikeus())
+    return render_template("index.html", silta=crawl_silta(), oikeus=crawl_oikeus(), factory=crawl_factory())
 
 
 @app.route("/_health")

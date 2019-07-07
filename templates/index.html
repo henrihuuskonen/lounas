@@ -48,4 +48,15 @@
       Ei mitään :(
     {% endif %}
 
+    <h2> Factory: </h2>
+    {% if factory %}
+      <ul>
+      {% for item in factory %}
+        <li> {{ item }}</a>
+      {% endfor %}
+      </ul>
+    {% else %}
+      Ei mitään :(
+    {% endif %}
+
 </body>
