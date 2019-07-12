@@ -25,38 +25,17 @@
 
   <h1>Ruokaa!</h1>
 
-    <h2> Silta: </h2>
-    {% if silta %}
-      <ul>
-      {% for item in silta %}
-        <li> {{ item }}</a>
-      {% endfor %}
-      </ul>
-    {% else %}
-      Ei mitään :(
-    {% endif %}
-
-
-    <h2> Oikeus: </h2>
-    {% if oikeus %}
-      <ul>
-      {% for item in oikeus %}
-        <li> {{ item }}</a>
-      {% endfor %}
-      </ul>
-    {% else %}
-      Ei mitään :(
-    {% endif %}
-
-    <h2> Factory: </h2>
-    {% if factory %}
-      <ul>
-      {% for item in factory %}
-        <li> {{ item }}</a>
-      {% endfor %}
-      </ul>
-    {% else %}
-      Ei mitään :(
-    {% endif %}
+    {% for title, items in data.items() %}
+      <h2> {{ title[0]|upper}}{{title[1:] }}: </h2>
+        {% if items %}
+          <ul>
+            {% for item in items %}
+              <li> {{ item }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          Ei mitään :(
+        {% endif %}
+    {% endfor %}
 
 </body>

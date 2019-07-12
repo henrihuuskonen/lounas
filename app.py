@@ -1,6 +1,6 @@
 import re
 from datetime import date, timedelta
-
+from collections import OrderedDict
 import requests
 from bs4 import BeautifulSoup
 from flask import Flask, Response, render_template
@@ -10,6 +10,26 @@ import config
 app = Flask(__name__)
 
 DATE_MAP = {0: "maanantai", 1: "tiistai", 2: "keskiviikko", 3: "torstai", 4: "perjantai", 5: "lauantai", 6: "sunnuntai"}
+
+
+def get_sodexo(location_id):
+    t = date.today()
+    month = t.month if t.month > 10 else ("0" + str(t.month))
+    base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/" + location_id
+    r = requests.get(f"{base_url}/{t.year}/{month}/{t.day}/fi")
+    data = r.json()
+    ret = [c["title_fi"] for c in data["courses"]]
+    print("ret")
+    print(ret)
+    return [c["title_fi"] for c in data["courses"]]
+
+
+def get_min():
+    return get_sodexo("35005")
+
+
+def get_hiili():
+    return get_sodexo("131")
 
 
 def crawl_factory():
@@ -60,7 +80,16 @@ def crawl_silta():
 
 @app.route("/")
 def index():
-    return render_template("index.html", silta=crawl_silta(), oikeus=crawl_oikeus(), factory=crawl_factory())
+    data = OrderedDict(
+        {
+            "hiili": get_hiili(),
+            "min": get_min(),
+            "silta": crawl_silta(),
+            "oikeus": crawl_oikeus(),
+            "factory": crawl_factory(),
+        }
+    )
+    return render_template("index.html", data=data)
 
 
 @app.route("/_health")
