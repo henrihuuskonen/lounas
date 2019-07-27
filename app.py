@@ -64,6 +64,9 @@ def crawl_garam_page(url):
     today_index = next(iter([i for i, s in enumerate(all_p) if today in s.text]), None)
     tomorrow_index = next(iter([i for i, s in enumerate(all_p) if tomorrow in s.text]), None)
 
+    if not tomorrow_index:
+        tomorrow_index = next(iter([i for i, s in enumerate(all_p) if "Hinnat" in s.text]), None)
+
     if today_index and tomorrow_index:
         return [p.text for p in all_p[today_index + 1 : tomorrow_index]]
 
