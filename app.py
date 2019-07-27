@@ -18,9 +18,6 @@ def get_sodexo(location_id):
     base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/" + location_id
     r = requests.get(f"{base_url}/{t.year}/{month}/{t.day}/fi")
     data = r.json()
-    ret = [c["title_fi"] for c in data["courses"]]
-    print("ret")
-    print(ret)
     return [c["title_fi"] for c in data["courses"]]
 
 
