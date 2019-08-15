@@ -82,8 +82,8 @@ def crawl_silta():
 def index():
     data = OrderedDict(
         {
-            "hiili": get_hiili(),
             "min": get_min(),
+            "hiili": get_hiili(),
             "silta": crawl_silta(),
             "oikeus": crawl_oikeus(),
             "factory": crawl_factory(),
