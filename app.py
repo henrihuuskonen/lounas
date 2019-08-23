@@ -3,9 +3,7 @@ from datetime import date, timedelta
 from collections import OrderedDict
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, Response, render_template
-
-import config
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -92,10 +90,5 @@ def index():
     return render_template("index.html", data=data)
 
 
-@app.route("/_health")
-def health():
-    return Response(status=200)
-
-
-if __name__ == "__main__":
-    app.run(port=config.PORT, debug=config.DEBUG_MODE)
+if __name__ == '__main__':
+    app.run()
