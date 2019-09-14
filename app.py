@@ -49,7 +49,7 @@ def crawl_garam_page(url):
     soup = BeautifulSoup(r.text, "html.parser")
 
     wrapper = soup.find_all(class_="text-content")[2]
-    if not wrapper or not wrapper.p or "VIIKKO" not in wrapper.p.text:
+    if not wrapper or not wrapper.p:
         return None
 
     today = DATE_MAP[date.weekday(date.today())].upper()
