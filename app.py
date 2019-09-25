@@ -47,8 +47,8 @@ def crawl_factory():
 def crawl_garam_page(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
-
-    wrapper = soup.find_all(class_="text-content")[2]
+    text_contents = soup.find_all(class_="text-content")
+    wrapper = text_contents[3]
     if not wrapper or not wrapper.p:
         return None
 
