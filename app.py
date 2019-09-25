@@ -44,6 +44,20 @@ def crawl_factory():
     return [str(item).strip() for item in next_p.contents if str(item) != "<br/>"]
 
 
+def crawl_himasali():
+    r = requests.get("https://www.himasali.com/lounaslista/")
+
+    today = DATE_MAP[date.weekday(date.today())].capitalize()
+
+    soup = BeautifulSoup(r.text, "html.parser")
+    for i in range(0, 20):
+        lst = soup.find_all("p")[i].text
+        if str(today) in lst:
+            return ("\n".join(lst.split("\n")[1:])).splitlines()
+
+    return None
+
+
 def crawl_garam_page(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
@@ -85,6 +99,7 @@ def index():
             "silta": crawl_silta(),
             "oikeus": crawl_oikeus(),
             "factory": crawl_factory(),
+            "hima&Sali": crawl_himasali(),
         }
     )
     return render_template("index.html", data=data)
