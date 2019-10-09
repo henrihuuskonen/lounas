@@ -1,5 +1,8 @@
 # lounas.si.vu
 
+## Source
+https://github.com/pihvi/lounas/tree/docker
+
 ## Running Docker locally 
 - Build image
 - Run image e.g. `docker run -it -p 5000:5000 some_name`
