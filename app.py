@@ -58,6 +58,27 @@ def crawl_himasali():
     return None
 
 
+def crawl_dylanmilk():
+    r = requests.get("https://www.dylan.fi/milk")
+    soup = BeautifulSoup(r.text, "html.parser")
+    for i in range(0, 50):
+        row = soup.find_all("p")[i].text
+        today = DATE_MAP[date.weekday(date.today())].capitalize()
+
+        if str(today) in str(row):
+            i += 1
+            break
+
+    arr = []
+    for i in range(i, 50):
+        row = soup.find_all("p")[i].text
+        if len(str(row)) < 10:
+            break
+        arr.append(row)
+
+    return arr
+
+
 def crawl_garam_page(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
@@ -77,7 +98,7 @@ def crawl_garam_page(url):
         tomorrow_index = next(iter([i for i, s in enumerate(all_p) if "Hinnat" in s.text]), None)
 
     if today_index and tomorrow_index:
-        return [p.text for p in all_p[today_index + 1 : tomorrow_index]]
+        return [p.text for p in all_p[today_index + 1: tomorrow_index]]
 
     return None
 
@@ -100,6 +121,7 @@ def index():
             "oikeus": crawl_oikeus(),
             "factory": crawl_factory(),
             "hima&Sali": crawl_himasali(),
+            "Dylan Milk": crawl_dylanmilk(),
         }
     )
     return render_template("index.html", data=data)
