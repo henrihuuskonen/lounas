@@ -15,21 +15,21 @@ DATE_MAP = {0: "maanantai", 1: "tiistai", 2: "keskiviikko", 3: "torstai", 4: "pe
 def get_sodexo(location_id):
     try:
         t = date.today()
-        month = t.month if t.month > 10 else ("0" + str(t.month))
-        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/" + location_id
-        r = requests.get(f"{base_url}/{t.year}/{month}/{t.day}/fi")
+        base_url = f"https://www.sodexo.fi/ruokalistat/output/daily_json/{location_id}/{t.year}-{t.month:02}-{t.day:02}"
+        r = requests.get(base_url)
         data = r.json()
-        return [c["title_fi"] for c in data["courses"]]
+        lines = sorted((int(i), c) for i, c in data["courses"].items())
+        return ["{} ({})".format(c["title_fi"], c["properties"]) for i,c in lines]
     except JSONDecodeError:
         return None
 
 
 def get_min():
-    return get_sodexo("35005")
+    return get_sodexo("70")
 
 
 def get_hiili():
-    return get_sodexo("131")
+    return get_sodexo("70")
 
 
 def crawl_factory():
