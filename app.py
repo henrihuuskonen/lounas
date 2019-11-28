@@ -1,6 +1,8 @@
 import re
 from datetime import date, timedelta
 from collections import OrderedDict
+from json import JSONDecodeError
+
 import requests
 from bs4 import BeautifulSoup
 from flask import Flask, render_template
@@ -11,12 +13,15 @@ DATE_MAP = {0: "maanantai", 1: "tiistai", 2: "keskiviikko", 3: "torstai", 4: "pe
 
 
 def get_sodexo(location_id):
-    t = date.today()
-    month = t.month if t.month > 10 else ("0" + str(t.month))
-    base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/" + location_id
-    r = requests.get(f"{base_url}/{t.year}/{month}/{t.day}/fi")
-    data = r.json()
-    return [c["title_fi"] for c in data["courses"]]
+    try:
+        t = date.today()
+        month = t.month if t.month > 10 else ("0" + str(t.month))
+        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/" + location_id
+        r = requests.get(f"{base_url}/{t.year}/{month}/{t.day}/fi")
+        data = r.json()
+        return [c["title_fi"] for c in data["courses"]]
+    except JSONDecodeError:
+        return None
 
 
 def get_min():
