@@ -49,19 +49,30 @@
         }
 
         .translate-bar {
-            margin: auto;
+            padding: 1rem;
         }
+
+        .flag {
+            width: auto;
+            height: auto;
+            cursor: pointer;
+            padding: 0.2rem;
+        }
+
     </style>
 </head>
 <body>
 <div>
-<div class="translate-bar" id="translator_7150">
-    <noscript>Javascript is disable - <a href="http://www.webestools.com/">http://www.webestools.com/</a> - <a
-            href="http://www.webestools.com/translator-buttons-web-page-translation-google-translate-website-widget-online-html-translator.html">Translation
-        Buttons Generator</a></noscript>
+<div class="translate-bar">
+    <a  href="http://lounas.si.vu/"><img class="flag" src="static/flags/finland.png"></a>
+    <a  href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=da&u=http://lounas.si.vu/"><img class="flag" src="static/flags/denmark.png"></a>
+   <a href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=fr&u=http://lounas.si.vu/"><img class="flag" src="static/flags/france.png" ></a>
+   <a href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=de&u=http://lounas.si.vu/"> <img class="flag" src="static/flags/germany.png" ></a>
+   <a href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=it&u=http://lounas.si.vu/"> <img class="flag" src="static/flags/italy.png" ></a>
+    <a href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=es&u=http://lounas.si.vu/"><img class="flag" src="static/flags/spain.png" ></a>
+    <a href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=sv&u=http://lounas.si.vu/"><img class="flag" src="static/flags/sweden.png" ></a>
+    <a href="https://translate.google.fi/translate?hl=fi&sl=auto&tl=en&u=http://lounas.si.vu/"><img class="flag" src="static/flags/uk.png" ></a>
 </div>
-<script type="text/javascript" src="http://services.webestools.com/translator/7150-4-yyyyyyyyy.js"></script>
-
 <h1>Ruokaa!</h1>
 
 {% for title, items in data.items() %}
