@@ -12,24 +12,38 @@ app = Flask(__name__)
 DATE_MAP = {0: "maanantai", 1: "tiistai", 2: "keskiviikko", 3: "torstai", 4: "perjantai", 5: "lauantai", 6: "sunnuntai"}
 
 
-def get_sodexo(location_id):
+def get_min():
     try:
         t = date.today()
         month = t.month if t.month > 10 else ("0" + str(t.month))
-        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/" + location_id
-        r = requests.get(f"{base_url}/{t.year}/{month}/{t.day}/fi")
+        day = t.day if t.day > 10 else ("0" + str(t.day))
+        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/70"
+        r = requests.get(f"{base_url}/{t.year}-{month}-{day}")
         data = r.json()
-        return [c["title_fi"] for c in data["courses"]]
+        list = []
+        for number in data["courses"]:
+            if "MIN" not in data["courses"][number]["category"]:
+                list.append(data["courses"][number]["title_fi"])
+        return list
     except JSONDecodeError:
         return None
 
 
-def get_min():
-    return get_sodexo("35005")
-
-
 def get_hiili():
-    return get_sodexo("131")
+    try:
+        t = date.today()
+        month = t.month if t.month > 10 else ("0" + str(t.month))
+        day = t.day if t.day > 10 else ("0" + str(t.day))
+        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/70"
+        r = requests.get(f"{base_url}/{t.year}-{month}-{day}")
+        data = r.json()
+        list = []
+        for number in data["courses"]:
+            if "MIN" in data["courses"][number]["category"]:
+                list.append(data["courses"][number]["title_fi"])
+        return list
+    except JSONDecodeError:
+        return None
 
 
 def crawl_factory():
