@@ -20,12 +20,12 @@ def get_min():
         base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/70"
         r = requests.get(f"{base_url}/{t.year}-{month}-{day}")
         data = r.json()
-        list = []
+        lst = []
         for number in data["courses"]:
-            if "MIN" not in data["courses"][number]["category"]:
-                list.append(data["courses"][number]["title_fi"])
-        return list
-    except JSONDecodeError:
+            if "MIN" in number["category"]:
+                lst.append(number["title_fi"])
+        return lst
+    except Exception:
         return None
 
 
@@ -37,87 +37,97 @@ def get_hiili():
         base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/70"
         r = requests.get(f"{base_url}/{t.year}-{month}-{day}")
         data = r.json()
-        list = []
+        lst = []
         for number in data["courses"]:
-            if "MIN" in data["courses"][number]["category"]:
-                list.append(data["courses"][number]["title_fi"])
-        return list
-    except JSONDecodeError:
+            if "MIN" not in number["category"]:
+                lst.append(number["title_fi"])
+        return lst
+    except Exception:
         return None
 
 
 def crawl_factory():
-    r = requests.get("https://ravintolafactory.com/lounasravintolat/ravintolat/helsinki-salmisaari/")
+    try:
+        r = requests.get("https://ravintolafactory.com/lounasravintolat/ravintolat/helsinki-salmisaari/")
 
-    soup = BeautifulSoup(r.text, "html.parser")
+        soup = BeautifulSoup(r.text, "html.parser")
 
-    today = DATE_MAP[date.weekday(date.today())].capitalize()
-    h3 = soup.find("h3", string=re.compile(today))
-    if not h3:
+        today = DATE_MAP[date.weekday(date.today())].capitalize()
+        h3 = soup.find("h3", string=re.compile(today))
+        if not h3:
+            return None
+
+        next_p = h3.findNext("p")
+        if next_p.find("img"):
+            next_p = next_p.findNext("p")
+
+        return [str(item).strip() for item in next_p.contents if str(item) != "<br/>"]
+    except Exception:
         return None
-
-    next_p = h3.findNext("p")
-    if next_p.find("img"):
-        next_p = next_p.findNext("p")
-
-    return [str(item).strip() for item in next_p.contents if str(item) != "<br/>"]
 
 
 def crawl_himasali():
-    r = requests.get("https://www.himasali.com/lounaslista/")
+    try:
+        r = requests.get("https://www.himasali.com/lounaslista/")
 
-    today = DATE_MAP[date.weekday(date.today())].capitalize()
+        today = DATE_MAP[date.weekday(date.today())].capitalize()
 
-    soup = BeautifulSoup(r.text, "html.parser")
-    for i in range(0, 20):
-        lst = soup.find_all("p")[i].text
-        if str(today) in lst:
-            return ("\n".join(lst.split("\n")[1:])).splitlines()
-
-    return None
+        soup = BeautifulSoup(r.text, "html.parser")
+        for i in range(0, 20):
+            lst = soup.find_all("p")[i].text
+            if str(today) in lst:
+                return ("\n".join(lst.split("\n")[1:])).splitlines()
+    except Exception:
+        return None
 
 
 def crawl_dylanmilk():
-    r = requests.get("https://www.dylan.fi/milk")
-    soup = BeautifulSoup(r.text, "html.parser")
-    for i in range(0, 50):
-        row = soup.find_all("p")[i].text
-        today = DATE_MAP[date.weekday(date.today())].capitalize()
+    try:
+        r = requests.get("https://www.dylan.fi/milk")
+        soup = BeautifulSoup(r.text, "html.parser")
+        for i in range(0, 50):
+            row = soup.find_all("p")[i].text
+            today = DATE_MAP[date.weekday(date.today())].capitalize()
 
-        if str(today) in str(row):
-            i += 1
-            break
+            if str(today) in str(row):
+                i += 1
+                break
 
-    arr = []
-    for i in range(i, 50):
-        row = soup.find_all("p")[i].text
-        if len(str(row)) < 10:
-            break
-        arr.append(row)
+        arr = []
+        for i in range(i, 50):
+            row = soup.find_all("p")[i].text
+            if len(str(row)) < 10:
+                break
+            arr.append(row)
 
-    return arr
+        return arr
+    except Exception:
+        return None
 
 
 def crawl_garam_page(url):
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, "html.parser")
-    text_contents = soup.find_all(class_="text-content")
-    wrapper = text_contents[3]
-    if not wrapper or not wrapper.p:
+    try:
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, "html.parser")
+        text_contents = soup.find_all(class_="text-content")
+        wrapper = text_contents[3]
+        if not wrapper or not wrapper.p:
+            return None
+
+        today = DATE_MAP[date.weekday(date.today())].upper()
+        tomorrow = DATE_MAP[date.weekday(date.today() + timedelta(1))].upper()
+
+        all_p = wrapper.find_all("p")
+        today_index = next(iter([i for i, s in enumerate(all_p) if today in s.text]), None)
+        tomorrow_index = next(iter([i for i, s in enumerate(all_p) if tomorrow in s.text]), None)
+
+        if not tomorrow_index:
+            tomorrow_index = next(iter([i for i, s in enumerate(all_p) if "Hinnat" in s.text]), None)
+
+        if today_index and tomorrow_index:
+            return [p.text for p in all_p[today_index + 1: tomorrow_index]]
+    except Exception:
         return None
-
-    today = DATE_MAP[date.weekday(date.today())].upper()
-    tomorrow = DATE_MAP[date.weekday(date.today() + timedelta(1))].upper()
-
-    all_p = wrapper.find_all("p")
-    today_index = next(iter([i for i, s in enumerate(all_p) if today in s.text]), None)
-    tomorrow_index = next(iter([i for i, s in enumerate(all_p) if tomorrow in s.text]), None)
-
-    if not tomorrow_index:
-        tomorrow_index = next(iter([i for i, s in enumerate(all_p) if "Hinnat" in s.text]), None)
-
-    if today_index and tomorrow_index:
-        return [p.text for p in all_p[today_index + 1: tomorrow_index]]
 
     return None
 
