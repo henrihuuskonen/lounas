@@ -1,4 +1,5 @@
 import re
+import traceback
 from datetime import date, timedelta
 from collections import OrderedDict
 from json import JSONDecodeError
@@ -21,9 +22,8 @@ def get_min():
         r = requests.get(f"{base_url}/{t.year}-{month}-{day}")
         data = r.json()
         lst = []
-        for number in data["courses"]:
-            if "MIN" in number["category"]:
-                lst.append(number["title_fi"])
+        for _, number in data["courses"].items():
+            lst.append("{} ({})".format(number["title_fi"], number["properties"]))
         return lst
     except Exception:
         return None
@@ -34,13 +34,12 @@ def get_hiili():
         t = date.today()
         month = t.month if t.month > 10 else ("0" + str(t.month))
         day = t.day if t.day > 10 else ("0" + str(t.day))
-        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/70"
+        base_url = "https://www.sodexo.fi/ruokalistat/output/daily_json/7498"
         r = requests.get(f"{base_url}/{t.year}-{month}-{day}")
         data = r.json()
         lst = []
-        for number in data["courses"]:
-            if "MIN" not in number["category"]:
-                lst.append(number["title_fi"])
+        for _, number in data["courses"].items():
+            lst.append("{} ({})".format(number["title_fi"], number["properties"]))
         return lst
     except Exception:
         return None
