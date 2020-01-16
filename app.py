@@ -105,11 +105,16 @@ def crawl_dylanmilk():
 
 
 def crawl_garam_page(url):
+    def select_text_content(text_contents):
+        for div in text_contents:
+            if "maanantai" in div.text.lower():
+                return div
+        return text_contents[3]
     try:
         r = requests.get(url)
         soup = BeautifulSoup(r.text, "html.parser")
         text_contents = soup.find_all(class_="text-content")
-        wrapper = text_contents[3]
+        wrapper = select_text_content(text_contents)
         if not wrapper or not wrapper.p:
             return None
 
