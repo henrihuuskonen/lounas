@@ -106,8 +106,16 @@ def crawl_dylanmilk():
 
 def crawl_garam_page(url):
     def select_text_content(text_contents):
+        lookfor = ["maanantai", "tiistai", "keskiviikko", "torstai", "perjantai"]
         for div in text_contents:
-            if "maanantai" in div.text.lower():
+            count = 0
+            for word in lookfor:
+                if word in div.text.lower():
+                    count += 1
+            if count >= 3:
+                # If most of the weekday words appear in the div, it is
+                # probably the lunch list. This lets them to typo couple of the
+                # words, but they still need to get most of them right.
                 return div
         return text_contents[3]
     try:
